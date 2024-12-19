@@ -1,0 +1,7 @@
+azure-identity
+azure-storage-blob
+azure-storage-queue
+numpy
+Pillow
+scikit-learn
+pandas

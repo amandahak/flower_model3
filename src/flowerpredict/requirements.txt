@@ -1,0 +1,14 @@
+azure-identity
+azure-storage-blob
+fastapi
+pydantic
+uvicorn
+python-dotenv
+Pillow
+numpy
+scikit-learn
+python-multipart
+
+fastapi
+uvicorn
+tensorflow

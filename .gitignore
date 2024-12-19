@@ -1,0 +1,28 @@
+# Local Python Environment
+.venv/
+.DS_Store
+
+# Sandbox for e.g. Jupyter Notebook experiments
+src/sandbox/
+
+# IDE settings
+.idea/
+.vscode/
+
+# Compiled Python files
+*.pyc
+*.pyo
+__pycache__/
+
+# Terraform State Files and Binaries
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+
+# This is not a sensitive file, but in our context, we can simply regenerate it
+# using the `terraform init` command
+*.terraform.lock.hcl
+
+# OS files
+.DS_Store
