@@ -46,7 +46,7 @@ for old_name, new_name in [
 while True:
     n_images = n_images_waiting()
     # If there are more than N images in the queue, let's train the model
-    if n_images > 1:
+    if n_images > 4:
 
         # Load .keras model
         latest_version = latest_model_version()
