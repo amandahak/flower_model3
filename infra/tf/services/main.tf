@@ -30,11 +30,11 @@ resource "azurerm_storage_queue" "olearn" {
 
 # TODO: Upload the base model
 resource "azurerm_storage_blob" "model" {
-  name                   = "models/model_1.keras"
+  name                   = "models/flowers_1.keras"
   storage_account_name   = azurerm_storage_account.olearn.name
   storage_container_name = azurerm_storage_container.olearn.name
   type                   = "Block"
-  source                 = "../../../src/azurite_populate/model_1.keras"
+  source                 = "../../../src/azurite_populate/flowers_1.keras"
 }
 
 # Upload validation data
@@ -127,7 +127,7 @@ resource "azurerm_container_group" "olearn" {
     name   = "modeller"
     image  = var.modeller_image
     cpu    = "1.0"
-    memory = "1.0"
+    memory = "3.0"
 
     environment_variables = {
       USE_AZURE_CREDENTIAL = var.use_azure_credential

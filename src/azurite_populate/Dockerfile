@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 # Copy the local code to the container image
 COPY populate.py .
 
-COPY model_1.keras val_data.zip ./
+COPY flowers_1.keras val_data.zip ./
 
 # Run the Python script
 ENTRYPOINT ["python", "populate.py"]

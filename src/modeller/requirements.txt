@@ -1,7 +1,8 @@
+tensorflow
+Pillow
+numpy
+pandas
+scikit-learn
 azure-identity
 azure-storage-blob
 azure-storage-queue
-numpy
-Pillow
-scikit-learn
-pandas

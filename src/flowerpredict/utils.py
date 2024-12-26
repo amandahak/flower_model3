@@ -2,7 +2,6 @@ import zlib
 import numpy as np
 import os
 import logging
-import joblib
 from tensorflow.keras.models import load_model
 import tensorflow as tf
 
@@ -55,7 +54,7 @@ def get_blob_service_client():
 def latest_model_version() -> int:
     """
     Retrieve the latest model version based on the Unix timestamp in the model file name.
-    If no Unix-formatted models are found, default to 'model_1.keras'.
+    If no Unix-formatted models are found, default to 'flowers_1.keras'.
     """
     with get_blob_service_client() as blob_service_client:
         container_client = blob_service_client.get_container_client(os.environ["STORAGE_CONTAINER"])
@@ -78,7 +77,7 @@ def latest_model_version() -> int:
             return latest
         else:
             # Fallback to default model name
-            logging.info("No Unix-formatted model found, defaulting to model_1.keras")
+            logging.info("No Unix-formatted model found, defaulting to flowers_1.keras")
             return 1
 
 @lru_cache(maxsize=5)
@@ -87,7 +86,7 @@ def load_model(version:int):
     # The model name follows the pattern model_{unix_seconds}.keras
     with get_blob_service_client() as blob_service_client:
         container_client = blob_service_client.get_container_client(os.environ["STORAGE_CONTAINER"])
-        blob_client = container_client.get_blob_client(f"models/model_{version}.keras")
+        blob_client = container_client.get_blob_client(f"models/flowers_{version}.keras")
         logging.info(f"Loading model version {version}.")
 
         with BytesIO() as data:

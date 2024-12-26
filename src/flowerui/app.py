@@ -2,9 +2,13 @@ import requests
 import os
 import logging
 import streamlit as st
+import uuid
+import io
+import json
 
 #from PIL import Image
 from azure.storage.queue import QueueServiceClient
+from azure.storage.blob import BlobServiceClient
 
 
 # Set the logging level for this script
@@ -16,6 +20,19 @@ azure_logger.setLevel(logging.WARNING)
 
 # Decide if we're running in the cloud or locally
 CLOUD = os.environ.get("USE_AZURE_CREDENTIAL", "false").lower() == "true"
+
+def get_blob_service_client():
+    """
+    The STORAGE_CONNECTION_STRING is only set up when running in the cloud. 
+    If it's not set, we're running locally with Azurite.
+    """
+    if CLOUD:
+        from azure.identity import DefaultAzureCredential # type: ignore
+        credential = DefaultAzureCredential()
+        account_url = os.environ["STORAGE_BLOB_URL"]
+        return BlobServiceClient(account_url=account_url, credential=credential)
+    else:
+        return BlobServiceClient.from_connection_string(os.environ["STORAGE_CONNECTION_STRING"])
 
 def get_queue_service_client():
     """
@@ -85,10 +102,34 @@ if image_file is not None:
 
     # Submit-button
     if st.button("Submit for training"):
-        with get_queue_service_client() as queue_service_client:
-            with queue_service_client.get_queue_client(os.environ["STORAGE_QUEUE"]) as queue_client:
-                compressed_b64 = [image_file, label_index]
-                queue_client.send_message(compressed_b64)
 
-                logging.info(f"Message ({label}) as ({compresssed_b64}) sent to Queue ({os.environ['STORAGE_QUEUE']})")
-                st.write(f"Sent: {compressed_b64} as {label_index}")
+        # Upload the image to Azure Blob storage
+
+        with get_blob_service_client() as blob_service_client:
+            # Generate unique filename
+            blob_name = f"{uuid.uuid4()}_{image_file.name}"
+
+            # Get the container and blob clients
+            container_client = blob_service_client.get_container_client(os.environ["STORAGE_CONTAINER"])
+            blob_client = container_client.get_blob_client(blob_name)
+
+            # Upload file to Azure Blob Storage
+            with io.BytesIO(image_file.getvalue()) as uploaded_file:
+                blob_client.upload_blob(uploaded_file.read(), overwrite=True)
+
+                print(f"File: {blob_name} loaded to blob storage.")
+
+        # Send image name and label to the queue as a json structure
+        with get_queue_service_client() as queue_service_client:
+
+            with queue_service_client.get_queue_client(os.environ["STORAGE_QUEUE"]) as queue_client:
+
+                # Construct the queue message with blob URL and label
+                message = {
+                    "blob_name": blob_name,
+                    "label": label_index
+                }
+                queue_client.send_message(json.dumps(message))
+
+                logging.info(f"Message ({blob_name}) and ({label_index}) sent to Queue ({os.environ['STORAGE_QUEUE']})")
+                st.write(f"Sent: {blob_name} as {label_index}")
