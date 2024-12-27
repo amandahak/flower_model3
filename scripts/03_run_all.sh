@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Varmista, että skripti on suorituskelpoinen
+
+[ -x "./scripts/03_run_all.sh" ] || chmod +x ./scripts/03_run_all.sh
+
 # Skripti käynnistää Azure-palvelut Terraformilla
 
 set -e  # Lopeta suoritus, jos tulee virhe
@@ -8,7 +12,7 @@ echo "🚀 Aloitetaan Azure-palveluiden käynnistäminen..."
 
 # Vaihe 1: Luo Azure Container Registry
 echo "🔧 Luodaan Azure Container Registry..."
-cd ../infra/tf/container_registry || { echo "❌ Hakemisto infra/tf/container_registry ei löytynyt!"; exit 1; }
+cd infra/tf/container_registry || { echo "❌ Hakemisto infra/tf/container_registry ei löytynyt!"; exit 1; }
 
 terraform init --upgrade
 terraform apply -auto-approve # Terraformi ei vaadi 'yes' -vastausta suorittaakseen
@@ -32,7 +36,7 @@ echo "🐳 flowerpredict, flowerui ja modeller buildattu!"
 
 # Vaihe 4: Julkaise palvelut Terraformilla
 echo "🚀 Julkaistaan Azure-palvelut..."
-cd ../infra/tf/services || { echo "❌ Hakemisto infra/tf/services ei löytynyt!"; exit 1; }
+cd infra/tf/services || { echo "❌ Hakemisto infra/tf/services ei löytynyt!"; exit 1; }
 
 terraform init --upgrade
 terraform apply -auto-approve # Terraformi ei vaadi 'yes' -vastausta suorittaakseen

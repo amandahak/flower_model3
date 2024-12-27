@@ -1,11 +1,16 @@
 #!/bin/bash
 
+# Varmista, että skripti on suorituskelpoinen
+
+[ -x "./scripts/04_destroy_all.sh" ] || chmod +x ./scripts/04_destroy_all.sh
+
+
 # Skripti tuhoaa Azure-palvelut Terraformilla
 
 echo "🛑 Sammutetaan Azure-palvelut Terraformilla..."
 
 # Siirrytään Terraform-hakemistoon
-cd ../infra/tf/services  || { echo "❌ Services-hakemistoa ei löytynyt!"; exit 1; }
+cd infra/tf/services  || { echo "❌ Services-hakemistoa ei löytynyt!"; exit 1; }
 
 # Tuhoamisprosessi
 echo "💣 Sammutetaan palvelut..."
