@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Skripti tuhoaa Azure-palvelut Terraformin avulla
+# Skripti tuhoaa Azure-palvelut Terraformilla
 
 echo "🛑 Sammutetaan Azure-palvelut Terraformilla..."
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Skripti käynnistää Azure-palvelut Terraformilla ja docker-kuvien avulla
+# Skripti käynnistää Azure-palvelut Terraformilla
 
 set -e  # Lopeta suoritus, jos tulee virhe
 
