@@ -103,6 +103,10 @@ az container logs --resource-group rg-identifier-olearn --name ci-identifier-ole
 
 ### Luokittele kukkakuvia ja kouluta mallia uudelleen
 
+
+![UI](UI.png)
+
+
 **Kukkien luokittelu**
 1. Avaa Streamlit-käyttöliittymä terraformin outputsien mukaisesta osoitteesta. 
 2. Lataa kuva kukasta.
