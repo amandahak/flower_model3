@@ -13,7 +13,7 @@ acr_name=$(terraform output -raw registry_name)
 
 # Use the fetched credentials to log in to Azure Container Registry
 echo "Logging in to Azure Container Registry..."
-az acr login --name $acr_name
+az acr login --name $acr_name --expose-token
 
 # Output message indicating successful login
 echo "Successfully logged in to Azure Container Registry."

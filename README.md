@@ -1,74 +1,106 @@
-# Opettaja: Online-Learning
+# Kukkaluokitteluohjelma (Flower Classifier) 
+Tekijä: Nadina Hakkarainen
+Kurssi: Online learning 2025
+
+Tämä ohjelma tarjoaa kokonaisratkaisun kuvapohjaiseen kukkadatan luokitteluun ja mallin päivittämiseen käyttäjän palautteen perusteella. Ratkaisu koostuu kolmesta osasta: 
+
+1. Front-end
+2. Back-end
+3. Mallin koulutus
+
+Ohjelma hyödyntää pilvipalvelua (Azure). 
 
 
-docker compose up -d --build
+![arkkitehtuuri](arkkitehtuuri.png)
 
-Tämä repositorio on opettajan kopio. Opiskelijat voivat käyttää sitä templaattina.
 
-Koopisnippetit kopioidaan kurssivideoiden tallentamisen myötä `course-materials`-repositorioon ja indeksoidaan sen `README.md`-tiedostoon.
 
-## Valmiin projektin käyttöönotto
+## Ominaisuudet 
 
-Aloita valitsemalla identifier, joka on osa kaikkia resursseja. Terraformin variables.tf poimii tämän ympäristömuuttujasta `TF_VAR_identifier`.
+1. Kuvien luokittelu viiteen eri kukkaluokkaan (dandelion, daisy, tulips, sunflowers, roses) streamlit-pohjaisessa käyttöliittymässä
+2. Kuvien lähettäminen "jonoon", käyttäjäpalaute
+    - Käyttöliittymä mahdollistaa kukkakuvan tallennuksen Azuren Blob Storageen
+    - Samalla tiedot kuvasta sekä oikeasta luokasta tallennetaan json-muodossa Azure Queueen. 
+3. Mallin koulutus
+    - Uudelleenkoulutus käynnistyy automaattisesti
+    - Blob Storagessa olevat kuvat prosessoidaan
+    - Uusi malli tallennetaan Azuren Blob Storageen
+4. Azuren infrastruktuuria hallinnoidaan Terraformin avulla
 
-Aseta se Linuxissa: `export TF_VAR_identifier=ope`
+## Azure flower_model -projektin käyttäminen
 
-1. Kirjaudu Azure CLI:llä sisään. Lue ohje [scripts/README.md](scripts/README.md).
-2. Luo Azureen Container Registry (docker imageille)
+## Kloonaa repositorio
 
-    ```bash
-    cd infra/tf/container_registry
+```bash
+git clone XXXXXXXXX
+```
 
-    terraform init --upgrade
-    terraform apply
-    ```
 
-3. Kirjaudu Azure Container Registryyn
+### Kirjaudu Azure CLI:llä sisään
 
-    ```bash
-    ./scripts/01_acr_login.sh
-    ```
+```bash
+az login
+```
 
-4. Buildaa haluamasi appi
+### Luo Azureen Container Registry (docker imageille)
 
-    ```bash
-    ./scripts/02_build_app.sh <APP> <VERSION>
-    ```
+```bash
+cd infra/tf/container_registry
 
-    Jos `APP` esimerkiksi `drawhello`, skripti buildaa Dockerfilen kansiossa `src/drawhello` ja puskee sen Azure Container Registryyn. Versio on päättämäsi versionumero.
+terraform init --upgrade
+terraform apply
+```
 
-    Julkaise kaikki kolme:
+### Kirjaudu Azure Container Registryyn skriptillä
 
-    * `drawhello`
-    * `modeller`
-    * `predicthello`
+```bash
+./scripts/01_acr_login.sh
+```
 
-5. Julkaise Services tf-skriptien mukaiset palvelut
+### Buildaa flowerpredict, flowerui ja modeller
 
-    Käy muokkaamassa `variables.tf`-tiedostoa kaikkien kolmen palvelun kohdalla. Vaihda muuttujan backend/frontend/modeller default-arvoksi Azure Portalista kopioimasi arvo, kuten vaikkapa: `default     = "cropeolearn.azurecr.io/drawhello:1"`
+```bash
+./scripts/02_build_n_release.sh flowerpredict 1.0
+```
+```bash
+./scripts/02_build_n_release.sh flowerui 1.0
+```
+```bash
+./scripts/02_build_n_release.sh modeller 1.0
+```
 
-    ```bash
-    cd infra/tf/services
+### Julkaise Services tf-skriptien mukaiset palvelut
 
-    terraform init --upgrade
-    terraform apply
+```bash
+cd infra/tf/services
 
-    # Voit seurata logeja näin (Ctrl+C lopettaa)
-    az container logs --resource-group rg-identifier-olearn --name ci-identifier-olearn --follow
-    ```
+terraform init --upgrade
+terraform apply
 
-6. Käy saitilla
+# Voit seurata logeja näin (Ctrl+C lopettaa)
+az container logs --resource-group rg-identifier-olearn --name ci-identifier-olearn --follow
+```
 
-    Saat palvelun osoitteen komennolla: `terraform output`, joka pitää ajaa kyseisessä hakemistossa (`infra/tf/services`).
+### Luokittele kukkakuvia ja kouluta mallia uudelleen
 
-7. Tarkkeile Storage Accountia
+**Kukkien luokittelu**
+1. Avaa Streamlit-käyttöliittymä terraformin outputsien mukaisesta osoitteesta. 
+2. Lataa kuva kukasta.
+3. Katso ennustettu luokka ja varmuus.
 
-    Lataa Microsoft Azure Storage Explorer ja tutki, kuinka Queueen (esim. `sq-ope-olearn`) saapuu rivejä, kun lisäät frontista kuvia koulutusjonoon. Kun kuvia on jonossa 2 tai enemmän, `modeller`-palvelu työstää uuden CSV-tiedoston ja uuden mallin. Nämä löytyvät Blob Containerista (esim. `st-ope-olearn`).
+**Palautteen antaminen ja mallin uudelleenkoulutus**
+1. Valitse kuvan oikea luokka, jos ennuste oli väärin.
+2. lähetä kuva Azure Queueen.
 
-8. Poista palvelut
+Kun `modeller` tunnistaa jonossa olevan 5 kuvaa, sen uudelleenkoulutus käynnistyy automaattisesti. 
 
-    Aja lopulta seuraava komento ensin `services`-hakemistossa ja sitten `container_registry`-hakemistossa:
+Uudelleenkoulutetut mallit tallennetaan Blob Storageen ja kukkia luokkia tunnistetaan jatkossa uusimmalla mallilla. 
 
-    ```bash
-    terraform destroy
-    ```
+### Muista aina poistaa palvelut
+
+Aja seuraava komento ensin `services`-hakemistossa ja sitten `container_registry`-hakemistossa:
+
+```bash
+terraform destroy
+```
+
