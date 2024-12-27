@@ -118,7 +118,7 @@ while True:
 
             # Upload the model to Azure Storage
             model.save("temp_model.keras")
-            upload("temp_model.keras", f"models/model_{model_version}.keras")
+            upload("temp_model.keras", f"models/flowers_{model_version}.keras")
     
     else: 
         logging.info("No images to process")

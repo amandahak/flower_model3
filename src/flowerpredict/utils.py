@@ -16,26 +16,6 @@ from functools import lru_cache
 # Are we running in the cloud?
 CLOUD = os.environ.get("USE_AZURE_CREDENTIAL", "false").lower() == "true"
 
-# def deserialize_grayscale(compressed_b64:str, size=(20, 40), has_label=False) -> tuple[Image.Image, int]:
-#     """Decompress the base64 string and convert it to an image.
-#     """
-
-#     label=None
-
-#     # Base64 => bytes
-#     decoded = b64decode(compressed_b64)
-
-#     if has_label:
-#         # Extract the label
-#         label = int.from_bytes(decoded[-1:], byteorder="big")
-#         decoded = decoded[:-1]
-
-#     uncompressed = zlib.decompress(decoded)
-
-#     # Convert back to numpy array
-#     img = Image.fromarray(np.frombuffer(uncompressed, dtype=np.bool_).reshape(size))
-
-#     return img, label
 
 def get_blob_service_client():
     """
