@@ -41,7 +41,7 @@ Ohjelmakokonaisuudet ovat pilvipalvelussa (Azure), jonka arkkitehtuuria hallinoi
 ### Kloonaa repositorio
 
 ```bash
-git clone XXXXXXXXX
+git clone ssh://git@repo.kamit.fi:45065/online-learning-2024/nadinalehtonen.git
 ```
 
 
@@ -51,6 +51,10 @@ git clone XXXXXXXXX
 az login
 ```
 
+**Valitse oikea tenant & subscription:** 
+
+[1] KAMK TT00CC64 Online Learning 
+
 ### Luo Azureen Container Registry (docker imageille)
 
 ```bash
@@ -58,6 +62,13 @@ cd infra/tf/container_registry
 
 terraform init --upgrade
 terraform apply
+```
+
+**Peruuta projektin juureen:** 
+
+3 x
+```bash
+cd ..
 ```
 
 ### Kirjaudu Azure Container Registryyn skriptillä
