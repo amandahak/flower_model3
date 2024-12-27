@@ -1,35 +1,44 @@
 # Kukkaluokitteluohjelma (Flower Classifier) 
-Tekijä: Nadina Hakkarainen
-Kurssi: Online learning 2025
 
-Tämä ohjelma tarjoaa kokonaisratkaisun kuvapohjaiseen kukkadatan luokitteluun ja mallin päivittämiseen käyttäjän palautteen perusteella. Ratkaisu koostuu kolmesta osasta: 
+**Tekijä:** Nadina Hakkarainen
+
+**Kurssi:** Online learning 2025
+
+_Tämän reporsitorion pohjana on käytetty kurssimateriaalina toimivaa [ope-olearn](https://repo.kamit.fi/online-learning-2024/ope-olearn) -repositoryä (Sourander J. 2024)._
+
+
+---
+
+Tämä ohjelmakokonaisuus tarjoaa kokonaisratkaisun kuvapohjaiseen kukkadatan luokitteluun ja mallin päivittämiseen käyttäjän palautteen perusteella. 
+
+**Ratkaisu koostuu kolmesta osasta:** 
 
 1. Front-end
 2. Back-end
 3. Mallin koulutus
 
-Ohjelma hyödyntää pilvipalvelua (Azure). 
+Ohjelmakokonaisuudet ovat pilvipalvelussa (Azure), jonka arkkitehtuuria hallinoidaan Terraformin avulla. 
 
 
 ![arkkitehtuuri](arkkitehtuuri.png)
 
 
-
 ## Ominaisuudet 
 
-1. Kuvien luokittelu viiteen eri kukkaluokkaan (dandelion, daisy, tulips, sunflowers, roses) streamlit-pohjaisessa käyttöliittymässä
+1. Kuvien luokittelu viiteen eri kukkaluokkaan (dandelion, daisy, tulips, sunflowers, roses) streamlit-pohjaisessa käyttöliittymässä. Luokittelijamallina hyödynnetään viimeisintä mallia. 
 2. Kuvien lähettäminen "jonoon", käyttäjäpalaute
     - Käyttöliittymä mahdollistaa kukkakuvan tallennuksen Azuren Blob Storageen
     - Samalla tiedot kuvasta sekä oikeasta luokasta tallennetaan json-muodossa Azure Queueen. 
 3. Mallin koulutus
-    - Uudelleenkoulutus käynnistyy automaattisesti
+    - Uudelleenkoulutus käynnistyy automaattisesti, kun jonossa havaitaan olevan tiedot viidestä kukkakuvasta ja -luokasta. 
     - Blob Storagessa olevat kuvat prosessoidaan
     - Uusi malli tallennetaan Azuren Blob Storageen
 4. Azuren infrastruktuuria hallinnoidaan Terraformin avulla
 
-## Azure flower_model -projektin käyttäminen
 
-## Kloonaa repositorio
+## KÄYTTÖOHJEET
+
+### Kloonaa repositorio
 
 ```bash
 git clone XXXXXXXXX
