@@ -55,6 +55,28 @@ az login
 
 [1] KAMK TT00CC64 Online Learning 
 
+
+### PALVELUIDEN KÄYNNISTÄMINEN JA SAMMUTUS SKRIPTEILLÄ
+
+**Käynnistys:**
+aja hakemiston juuressa: 
+
+```bash
+./scripts/03_run_all.sh
+```
+
+Seuraa teminaalia ja valitse itsellesi "identifier"
+
+**Sammutus:**
+aja hakemiston juuressa: 
+```bash
+./scripts/04_destroy_all.sh
+```
+Seuraa terminaalia ja toista "identifier"
+
+
+### PALVELUIDEN KÄYNNISTÄMINEN ILMAN SKRIPTIÄ
+
 ### Luo Azureen Container Registry (docker imageille)
 
 ```bash
