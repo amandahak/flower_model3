@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "🔧 Työskentelyhakemisto vaihdettu: $(pwd)"
+
 # Varmista, että skripti on suorituskelpoinen
 
 [ -x "./scripts/03_run_all.sh" ] || chmod +x ./scripts/03_run_all.sh
@@ -36,6 +38,9 @@ echo "🐳 flowerpredict, flowerui ja modeller buildattu!"
 
 # Vaihe 4: Julkaise palvelut Terraformilla
 echo "🚀 Julkaistaan Azure-palvelut..."
+
+
+cd ..  # Siirry projektin juurihakemistoon
 cd infra/tf/services || { echo "❌ Hakemisto infra/tf/services ei löytynyt!"; exit 1; }
 
 terraform init --upgrade
