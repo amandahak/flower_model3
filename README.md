@@ -1,38 +1,47 @@
 # Kukkaluokitteluohjelma (Flower Classifier) 
-Tekijä: Nadina Hakkarainen
-Kurssi: Online learning 2025
 
-Tämä ohjelma tarjoaa kokonaisratkaisun kuvapohjaiseen kukkadatan luokitteluun ja mallin päivittämiseen käyttäjän palautteen perusteella. Ratkaisu koostuu kolmesta osasta: 
+**Tekijä:** Nadina Hakkarainen
+
+**Kurssi:** Online learning 2025
+
+_Tämän reporsitorion pohjana on käytetty kurssimateriaalina toimivaa [ope-olearn](https://repo.kamit.fi/online-learning-2024/ope-olearn) -repositoryä (Sourander J. 2024)._
+
+
+---
+
+Tämä ohjelmakokonaisuus tarjoaa kokonaisratkaisun kuvapohjaiseen kukkadatan luokitteluun ja mallin päivittämiseen käyttäjän palautteen perusteella. 
+
+**Ratkaisu koostuu kolmesta osasta:** 
 
 1. Front-end
 2. Back-end
 3. Mallin koulutus
 
-Ohjelma hyödyntää pilvipalvelua (Azure). 
+Ohjelmakokonaisuudet ovat pilvipalvelussa (Azure), jonka arkkitehtuuria hallinoidaan Terraformin avulla. 
 
 
 ![arkkitehtuuri](arkkitehtuuri.png)
 
 
-
 ## Ominaisuudet 
 
-1. Kuvien luokittelu viiteen eri kukkaluokkaan (dandelion, daisy, tulips, sunflowers, roses) streamlit-pohjaisessa käyttöliittymässä
+1. Kuvien luokittelu viiteen eri kukkaluokkaan (dandelion, daisy, tulips, sunflowers, roses) streamlit-pohjaisessa käyttöliittymässä. Luokittelijamallina hyödynnetään viimeisintä mallia. 
 2. Kuvien lähettäminen "jonoon", käyttäjäpalaute
     - Käyttöliittymä mahdollistaa kukkakuvan tallennuksen Azuren Blob Storageen
     - Samalla tiedot kuvasta sekä oikeasta luokasta tallennetaan json-muodossa Azure Queueen. 
 3. Mallin koulutus
-    - Uudelleenkoulutus käynnistyy automaattisesti
+    - Uudelleenkoulutus käynnistyy automaattisesti, kun jonossa havaitaan olevan tiedot viidestä kukkakuvasta ja -luokasta. 
     - Blob Storagessa olevat kuvat prosessoidaan
     - Uusi malli tallennetaan Azuren Blob Storageen
 4. Azuren infrastruktuuria hallinnoidaan Terraformin avulla
 
-## Azure flower_model -projektin käyttäminen
 
-## Kloonaa repositorio
+## KÄYTTÖOHJEET
+
+### Kloonaa repositorio
 
 ```bash
-git clone XXXXXXXXX
+git clone ssh://git@repo.kamit.fi:45065/online-learning-2024/nadinalehtonen.git
 ```
 
 
@@ -42,6 +51,32 @@ git clone XXXXXXXXX
 az login
 ```
 
+**Valitse oikea tenant & subscription:** 
+
+[1] KAMK TT00CC64 Online Learning 
+
+
+### PALVELUIDEN KÄYNNISTÄMINEN JA SAMMUTUS SKRIPTEILLÄ
+
+**Käynnistys:**
+aja hakemiston juuressa: 
+
+```bash
+./scripts/03_run_all.sh
+```
+
+Seuraa teminaalia ja valitse itsellesi "identifier"
+
+**Sammutus:**
+aja hakemiston juuressa: 
+```bash
+./scripts/04_destroy_all.sh
+```
+Seuraa terminaalia ja toista "identifier"
+
+
+### PALVELUIDEN KÄYNNISTÄMINEN ILMAN SKRIPTIÄ
+
 ### Luo Azureen Container Registry (docker imageille)
 
 ```bash
@@ -49,6 +84,13 @@ cd infra/tf/container_registry
 
 terraform init --upgrade
 terraform apply
+```
+
+**Peruuta projektin juureen:** 
+
+3 x
+```bash
+cd ..
 ```
 
 ### Kirjaudu Azure Container Registryyn skriptillä
@@ -82,6 +124,10 @@ az container logs --resource-group rg-identifier-olearn --name ci-identifier-ole
 ```
 
 ### Luokittele kukkakuvia ja kouluta mallia uudelleen
+
+
+![UI](UI.png)
+
 
 **Kukkien luokittelu**
 1. Avaa Streamlit-käyttöliittymä terraformin outputsien mukaisesta osoitteesta. 
